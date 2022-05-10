@@ -1,6 +1,5 @@
-import React, { useCallback, useState } from "react";
-import { Button, Container, Form } from "react-bootstrap";
-import ReactQuill from "react-quill";
+import React, { useCallback, useEffect, useState } from "react";
+import { Button, Container, Form, Dropdown } from "react-bootstrap";
 import "react-quill/dist/quill.snow.css";
 import "./styles.css";
 
@@ -13,24 +12,20 @@ const NewBlogPost = (props) => {
 	const [title, setTitle] = useState("");
 	const [category, setCategory] = useState("");
 	const [cover, setCover] = useState("");
-	const [readTime, setReadTime] = useState("");
 	const [readTimeValue, setReadTimeValue] = useState("");
 	const [readTimeUnit, setReadTimeUnit] = useState("");
 	const [author, setAuthor] = useState("");
-	const [authorName, setAuthorName] = useState("");
-	const [authorAvatar, setAuthorAvatar] = useState("");
 	const [content, setContent] = useState("");
 
 	const postBlog = async (e) => {
-		e.preventDefault();
 		const response = await fetch("http://localhost:3001/blogPosts", {
 			method: "POST",
 			body: JSON.stringify({
 				title,
 				category,
 				cover,
-				readtime: { readTimeValue, readTimeUnit },
-				author: { authorName, authorAvatar },
+				readTime: { readTimeValue, readTimeUnit },
+				author,
 				content,
 			}),
 			headers: { "Content-type": "application/json" },
@@ -40,17 +35,33 @@ const NewBlogPost = (props) => {
 			setTitle("");
 			setCategory("");
 			setCover("");
-			setReadTime("");
 			setReadTimeValue("");
 			setReadTimeUnit("");
 			setAuthor("");
-			setAuthorName("");
-			setAuthorAvatar("");
 			setContent("");
 		} else {
 			alert("We have some problem, try again!");
 		}
 	};
+
+	const [authorInfo, setAuthorInfo] = useState([]);
+
+	const getAuthors = async () => {
+		const response = await fetch("http://localhost:3001/authors", {
+			headers: { "Content-type": "application/json" },
+		});
+		const authorsApi = await response.json();
+		console.log(authorsApi);
+		if (response.ok) {
+			setAuthorInfo(authorsApi);
+		} else {
+			alert("Blogs Error");
+		}
+	};
+
+	useEffect(() => {
+		getAuthors();
+	}, []);
 
 	return (
 		<Container className="new-blog-container">
@@ -58,6 +69,7 @@ const NewBlogPost = (props) => {
 				<Form.Group controlId="blog-form" className="mt-3">
 					<Form.Label>Title</Form.Label>
 					<Form.Control
+						required
 						size="lg"
 						type="text"
 						value={title}
@@ -71,6 +83,7 @@ const NewBlogPost = (props) => {
 				<Form.Group controlId="blog-form" className="mt-3">
 					<Form.Label>Category</Form.Label>
 					<Form.Control
+						required
 						size="lg"
 						type="text"
 						value={category}
@@ -84,6 +97,7 @@ const NewBlogPost = (props) => {
 				<Form.Group controlId="blog-form" className="mt-3">
 					<Form.Label>Cover</Form.Label>
 					<Form.Control
+						required
 						size="lg"
 						type="text"
 						value={cover}
@@ -97,6 +111,7 @@ const NewBlogPost = (props) => {
 				<Form.Group controlId="blog-form" className="mt-3">
 					<Form.Label>Readtime</Form.Label>
 					<Form.Control
+						required
 						size="lg"
 						type="number"
 						value={readTimeValue}
@@ -107,6 +122,7 @@ const NewBlogPost = (props) => {
 					/>
 
 					<Form.Control
+						required
 						size="lg"
 						type="text"
 						value={readTimeUnit}
@@ -117,30 +133,30 @@ const NewBlogPost = (props) => {
 					/>
 				</Form.Group>
 
-				<Form.Group controlId="blog-form" className="mt-3">
-					<Form.Label>Author</Form.Label>
-					<Form.Control
-						size="lg"
-						type="text"
-						value={authorName}
-						placeholder="name"
-						onChange={(e) => {
-							setAuthorName(e.target.value);
-						}}
-					/>
-					<Form.Control
-						size="lg"
-						type="text"
-						value={authorAvatar}
-						placeholder="avatar"
-						onChange={(e) => {
-							setAuthorAvatar(e.target.value);
-						}}
-					/>
-				</Form.Group>
+				<Dropdown className="my-3">
+					<Dropdown.Toggle variant="dark" id="dropdown-basic">
+						Author
+					</Dropdown.Toggle>
+
+					<Dropdown.Menu>
+						{authorInfo.map((authorgetInfo) => (
+							<Dropdown.Item
+								key={authorgetInfo._id}
+								value={author}
+								onSelect={(e) => {
+									setAuthor(authorgetInfo._id);
+								}}
+							>
+								{authorgetInfo.name}
+							</Dropdown.Item>
+						))}
+					</Dropdown.Menu>
+				</Dropdown>
+
 				<Form.Group controlId="blog-form" className="mt-3">
 					<Form.Label>Content</Form.Label>
 					<Form.Control
+						required
 						size="lg"
 						type="text"
 						value={content}
@@ -149,11 +165,6 @@ const NewBlogPost = (props) => {
 							setContent(e.target.value);
 						}}
 					/>
-				</Form.Group>
-
-				<Form.Group controlId="blog-content" className="mt-3">
-					<Form.Label>Blog Content</Form.Label>
-					<ReactQuill onChange={handleChange} className="new-blog-content" />
 				</Form.Group>
 
 				<Form.Group className="d-flex mt-3 justify-content-end">

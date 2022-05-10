@@ -4,12 +4,12 @@ import BlogList from "../../components/blog/blog-list/BlogList";
 import "./styles.css";
 
 const Home = (props) => {
-  return (
-    <Container fluid="sm">
-      <h1 className="blog-main-title">Welcome to the Strive Blog!</h1>
-      <BlogList />
-    </Container>
-  );
+	return (
+		<Container fluid="sm">
+			<h1 className="blog-main-title">Welcome to the Strive Blog!</h1>
+			<BlogList />
+		</Container>
+	);
 };
 
 export default Home;
