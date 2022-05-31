@@ -18,7 +18,8 @@ const NewBlogPost = (props) => {
 	const [content, setContent] = useState("");
 
 	const postBlog = async (e) => {
-		const response = await fetch("http://localhost:3001/blogPosts", {
+		const apiUrl = process.env.REACT_APP_BE_URL_BLOGPOSTS;
+		const response = await fetch(`${apiUrl}/blogPosts`, {
 			method: "POST",
 			body: JSON.stringify({
 				title,
@@ -28,7 +29,10 @@ const NewBlogPost = (props) => {
 				author,
 				content,
 			}),
-			headers: { "Content-type": "application/json" },
+			headers: {
+				Authorization: localStorage.getItem("accessToken"),
+				"Content-type": "application/json",
+			},
 		});
 		if (response.ok) {
 			alert("Blog Posted");
@@ -45,10 +49,15 @@ const NewBlogPost = (props) => {
 	};
 
 	const [authorInfo, setAuthorInfo] = useState([]);
+	const [selectedAuthor, setSelectedAuthor] = useState({});
 
 	const getAuthors = async () => {
-		const response = await fetch("http://localhost:3001/authors", {
-			headers: { "Content-type": "application/json" },
+		const apiUrl = process.env.REACT_APP_BE_URL_AUTHORS;
+		const response = await fetch(`${apiUrl}/authors`, {
+			headers: {
+				Authorization: localStorage.getItem("accessToken"),
+				"Content-type": "application/json",
+			},
 		});
 		const authorsApi = await response.json();
 		console.log(authorsApi);
@@ -62,6 +71,28 @@ const NewBlogPost = (props) => {
 	useEffect(() => {
 		getAuthors();
 	}, []);
+
+	// For selecte the correct Name
+	const getSelectedAuthor = async () => {
+		const apiUrl = process.env.REACT_APP_BE_URL_AUTHORS;
+		const response = await fetch(`${apiUrl}/authors` + author, {
+			headers: {
+				Authorization: localStorage.getItem("accessToken"),
+				"Content-type": "application/json",
+			},
+		});
+		const authorsNameApi = await response.json();
+		console.log(authorsNameApi);
+		if (response.ok) {
+			setSelectedAuthor(authorsNameApi);
+		} else {
+			alert("ERROR NAME");
+		}
+	};
+
+	useEffect(() => {
+		getSelectedAuthor();
+	}, [author]);
 
 	return (
 		<Container className="new-blog-container">
@@ -135,21 +166,22 @@ const NewBlogPost = (props) => {
 
 				<Dropdown className="my-3">
 					<Dropdown.Toggle variant="dark" id="dropdown-basic">
-						Author
+						{selectedAuthor.name ? selectedAuthor.name : "Author"}
 					</Dropdown.Toggle>
 
 					<Dropdown.Menu>
-						{authorInfo.map((authorgetInfo) => (
-							<Dropdown.Item
-								key={authorgetInfo._id}
-								value={author}
-								onSelect={(e) => {
-									setAuthor(authorgetInfo._id);
-								}}
-							>
-								{authorgetInfo.name}
-							</Dropdown.Item>
-						))}
+						{authorInfo.authors &&
+							authorInfo.authors.map((authorgetInfo) => (
+								<Dropdown.Item
+									key={authorgetInfo._id}
+									value={author}
+									onSelect={(e) => {
+										setAuthor(authorgetInfo._id);
+									}}
+								>
+									{authorgetInfo.name}
+								</Dropdown.Item>
+							))}
 					</Dropdown.Menu>
 				</Dropdown>
 
