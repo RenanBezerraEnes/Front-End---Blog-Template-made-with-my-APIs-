@@ -9,8 +9,8 @@ export default function Register() {
 	const [password, setPassword] = useState("");
 
 	const newUser = async (e) => {
-		const apiUrl = process.env.REACT_APP_BE_URL_REGISTER;
-		const response = await fetch(`${apiUrl}/register`, {
+		const apiUrl = process.env.REACT_APP_BE_URL;
+		const response = await fetch(`${apiUrl}/users/register`, {
 			method: "POST",
 			body: JSON.stringify({
 				name,

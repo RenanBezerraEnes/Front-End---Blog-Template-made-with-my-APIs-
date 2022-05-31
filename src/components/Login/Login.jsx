@@ -11,8 +11,8 @@ export default function Login() {
 
 	const login = async (e) => {
 		e.preventDefault();
-		const apiUrl = process.env.REACT_APP_BE_URL_LOGIN;
-		const response = await fetch(`${apiUrl}/login`, {
+		const apiUrl = process.env.REACT_APP_BE_URL;
+		const response = await fetch(`${apiUrl}/users/login`, {
 			method: "POST",
 			body: JSON.stringify({
 				email,
@@ -34,26 +34,6 @@ export default function Login() {
 			alert("Credentials are Invalid, please try again or contact our team!!!");
 		}
 	};
-
-	// const loginWithGoogle = async (e) => {
-	// 	const response = await fetch("http://localhost:3001/users/googleLogin", {
-	// 		method: "GET",
-	// 		body: JSON.stringify({
-	// 			email,
-	// 			password,
-	// 		}),
-	// 		headers: {
-	//
-	//
-	// 			"Content-type": "application/json",
-	// 		},
-	// 	});
-	// 	if (response.ok) {
-	// 		const body = await response.json();
-	// 		localStorage.setItem("accessToken", body.accessToken);
-	// 		alert("Welcome to Strive Blog Post!!!");
-	// 	}
-	// };
 
 	return (
 		<Container className="login-container">

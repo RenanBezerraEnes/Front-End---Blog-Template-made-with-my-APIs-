@@ -18,7 +18,7 @@ const NewBlogPost = (props) => {
 	const [content, setContent] = useState("");
 
 	const postBlog = async (e) => {
-		const apiUrl = process.env.REACT_APP_BE_URL_BLOGPOSTS;
+		const apiUrl = process.env.REACT_APP_BE_URL;
 		const response = await fetch(`${apiUrl}/blogPosts`, {
 			method: "POST",
 			body: JSON.stringify({
@@ -52,7 +52,7 @@ const NewBlogPost = (props) => {
 	const [selectedAuthor, setSelectedAuthor] = useState({});
 
 	const getAuthors = async () => {
-		const apiUrl = process.env.REACT_APP_BE_URL_AUTHORS;
+		const apiUrl = process.env.REACT_APP_BE_URL;
 		const response = await fetch(`${apiUrl}/authors`, {
 			headers: {
 				Authorization: localStorage.getItem("accessToken"),
@@ -74,7 +74,7 @@ const NewBlogPost = (props) => {
 
 	// For selecte the correct Name
 	const getSelectedAuthor = async () => {
-		const apiUrl = process.env.REACT_APP_BE_URL_AUTHORS;
+		const apiUrl = process.env.REACT_APP_BE_URL;
 		const response = await fetch(`${apiUrl}/authors` + author, {
 			headers: {
 				Authorization: localStorage.getItem("accessToken"),
