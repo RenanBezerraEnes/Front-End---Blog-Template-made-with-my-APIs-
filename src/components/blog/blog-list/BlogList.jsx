@@ -6,7 +6,7 @@ const BlogList = (props) => {
 	const [blogs, setBlogs] = useState([]);
 
 	const getBlogs = async () => {
-		const apiUrl = process.env.REACT_APP_BE_URL_BLOGPOSTS;
+		const apiUrl = process.env.REACT_APP_BE_URL;
 		const response = await fetch(`${apiUrl}/blogPosts`, {
 			headers: {
 				Authorization: localStorage.getItem("accessToken"),
